@@ -7,6 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('sequelize-playground:server');
 var http = require('http');
+var db = require('../util/database');
 
 /**
  * Get port from environment and store in Express.
@@ -25,7 +26,15 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
+db.authenticate()
+  .then(() => {
+    console.log('Connected to db: ' + db.config.database + '...');
+    server.listen(port);
+  })
+  .catch(err => {
+    console.log(err.message);
+    console.log('Failed to connect to DB');
+  });
 server.on('error', onError);
 server.on('listening', onListening);
 
@@ -58,22 +67,20 @@ function onError(error) {
     throw error;
   }
 
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+  var bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
-      break;
-    default:
-      throw error;
+  case 'EACCES':
+    console.error(bind + ' requires elevated privileges');
+    process.exit(1);
+    break;
+  case 'EADDRINUSE':
+    console.error(bind + ' is already in use');
+    process.exit(1);
+    break;
+  default:
+    throw error;
   }
 }
 
@@ -82,10 +89,8 @@ function onError(error) {
  */
 
 function onListening() {
-  console.log(`Listening to port ${port}...`)
+  console.log(`Listening to port ${port}...`);
   var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
+  var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
