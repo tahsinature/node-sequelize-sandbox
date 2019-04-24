@@ -3,7 +3,10 @@ const sequelize = require('../util/database');
 const User = require('./user');
 
 // Either pass nothing (Just DB SYNC) or Pass => true/false (determine if it should force All Table) || tableName (Will Force single Table)
-syncDB(true);
+// 'flash'
+// true
+// tableName
+syncDB('flash');
 
 //
 //
@@ -18,6 +21,7 @@ function syncDB() {
   if (arguments.length > 1) throw new Error('Can\t Pass two arguments into Database Synchronization');
   const arg = arguments[0];
   let force;
+  if (arg === 'flash') return flashDB();
   if (arguments.length < 1 || typeof arg === 'boolean') {
     force = arg;
     return syncParentDB();
@@ -34,6 +38,17 @@ function syncDB() {
       })
       .then(() => {
         console.log(`${sequelize.config.database} Synced` + (force ? ' Forcefully...' : '...'));
+      });
+  }
+
+  function flashDB() {
+    sequelize
+      .drop()
+      .then(() => {
+        console.log('Databse Flashed: All tables removeed!');
+      })
+      .catch(err => {
+        console.log(err.message);
       });
   }
 }
