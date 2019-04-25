@@ -3,9 +3,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 require('./models');
-
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var normalizedPath = require('path').join(__dirname, 'routes');
 
 var app = express();
 
@@ -15,7 +13,10 @@ app.use(express.urlencoded({ extended: false, }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+require('fs')
+  .readdirSync(normalizedPath)
+  .forEach(function(file) {
+    app.use('/' + file.split('.js')[0], require('./routes/' + file));
+  });
 
 module.exports = app;
