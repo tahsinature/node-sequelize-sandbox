@@ -25,11 +25,11 @@ var server = http.createServer(app);
 /**
  * Listen on provided port, on all network interfaces.
  */
-
-db.authenticate()
+db.establishConnections()
   .then(() => {
-    console.log('Connected to db: ' + db.config.database + '...');
     server.listen(port);
+    // const Sequelize = require('sequelize');
+    // console.log(Sequelize.db);
   })
   .catch(err => {
     console.log(err.message);
