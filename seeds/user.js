@@ -1,10 +1,14 @@
+const faker = require('faker');
 const models = require('../models');
 const { User, } = models;
-const dataGen = require('../util/dataGen');
-const schema = {
-  name: '{{name.lastName}}',
-};
-const data = dataGen.generateFromSchema(schema, 10);
+const data = [];
+
+for (let i = 0; i < 10; i++) {
+  const schema = {
+    name: faker.name.findName(),
+  };
+  data.push(schema);
+}
 
 User.bulkCreate(data)
   .then(() => {
