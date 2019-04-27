@@ -57,6 +57,7 @@ const db = {
     console.log('Feature Coming Soon');
   },
   sync(connection) {
+    if (!connection && this.connections.length === 1) connection = this.connections[0];
     connection
       .sync()
       .then(() => {
