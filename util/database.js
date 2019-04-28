@@ -1,4 +1,4 @@
-const Sequelize = require('sequelize');
+const { Sequelize, } = require('sequelize');
 let connections = [];
 
 const connection1 = new Sequelize('sequelize_playground', 'postgres', '1234', {
