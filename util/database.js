@@ -1,7 +1,7 @@
 const { Sequelize, } = require('sequelize');
-let connections = [];
+let connections = {};
 
-const connection1 = new Sequelize('sequelize_playground', 'postgres', '1234', {
+connections.sp1 = new Sequelize('sequelize_playground', 'postgres', '1234', {
   host: 'localhost',
   dialect: 'postgres',
   logging: false,
@@ -9,9 +9,8 @@ const connection1 = new Sequelize('sequelize_playground', 'postgres', '1234', {
     timestamps: false,
   },
 });
-connections.push(connection1);
 
-const connection2 = new Sequelize('sequelize_playground_2', 'postgres', '1234', {
+connections.sp2 = new Sequelize('sequelize_playground_2', 'postgres', '1234', {
   host: 'localhost',
   dialect: 'postgres',
   logging: false,
@@ -19,28 +18,30 @@ const connection2 = new Sequelize('sequelize_playground_2', 'postgres', '1234', 
     timestamps: false,
   },
 });
-connections.push(connection2);
 
 const db = {
   connections,
+  connectionsArray() {
+    return Object.values(this.connections);
+  },
   establishConnections() {
     const self = this;
     return new Promise(function(resolve, reject) {
       let activeConnection = 0;
-      self.connections.forEach(connection =>
+      self.connectionsArray().forEach(connection => {
         connection
           .authenticate()
           .then(() => {
             console.log('Connected to Database: ' + connection.config.database);
             activeConnection = activeConnection + 1;
-            if (activeConnection === connections.length) {
+            if (activeConnection === self.connectionsArray().length) {
               resolve('Successfully Connected to All DB...');
             }
           })
           .catch(err => {
             reject(new Error(err.message));
-          })
-      );
+          });
+      });
     });
   },
   resetTable(table) {
@@ -57,7 +58,7 @@ const db = {
     console.log('Feature Coming Soon');
   },
   sync(connection) {
-    if (!connection && this.connections.length === 1) connection = this.connections[0];
+    if (!connection && this.connectionsArray().length === 1) connection = this.connectionsArray()[0];
     connection
       .sync()
       .then(() => {
@@ -69,12 +70,12 @@ const db = {
   },
   syncAll() {
     let syncedConnection = 0;
-    this.connections.forEach(connection =>
+    this.connectionsArray().forEach(connection =>
       connection
         .sync()
         .then(() => {
           syncedConnection = syncedConnection + 1;
-          if (syncedConnection === connections.length) {
+          if (syncedConnection === this.connectionsArray().length) {
             console.log('All DB synced...');
           }
         })
@@ -95,19 +96,19 @@ const db = {
   },
   syncAllForce() {
     let syncedConnection = 0;
-    this.connections.forEach(connection =>
+    this.connectionsArray().forEach(connection => {
       connection
         .sync({ force: true, })
         .then(() => {
           syncedConnection = syncedConnection + 1;
-          if (syncedConnection === connections.length) {
+          if (syncedConnection === this.connectionsArray().length) {
             console.log('All DB synced Forcefully...');
           }
         })
         .catch(err => {
           throw err;
-        })
-    );
+        });
+    });
   },
   dropTablesFromConnection(connection) {
     connection
@@ -121,12 +122,12 @@ const db = {
   },
   dropTablesFromAllConnections() {
     let droppedConnection = 0;
-    this.connections.forEach(connection => {
+    this.connectionsArray().forEach(connection => {
       connection
         .drop()
         .then(() => {
           droppedConnection = droppedConnection + 1;
-          if (droppedConnection === this.connections.length) console.log(`All created tables has been removed from All Database (${this.connections.length})...`);
+          if (droppedConnection === this.connectionsArray().length) console.log(`All created tables has been removed from All Database (${this.connectionsArray().length})...`);
         })
         .catch(err => {
           throw err;

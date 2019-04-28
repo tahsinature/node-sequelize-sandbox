@@ -1,7 +1,7 @@
 const db = require('../util/database');
 const User = require('./user');
 
-// db.syncAllForce();
+// db.syncAll();
 
 module.exports = {
   User,
