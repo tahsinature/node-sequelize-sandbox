@@ -14,10 +14,3 @@ User.init(
 );
 
 module.exports = User;
-
-// console.log(
-//   db.connections[0].models.user.afterSync('asd', test => {
-//     console.log(db.connections[0].models.user.tableName + ' has been synced');
-//   })
-// );
-// User.sync({ force: true, });
