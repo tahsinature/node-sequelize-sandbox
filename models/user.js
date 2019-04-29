@@ -6,9 +6,18 @@ class User extends Model {}
 User.init(
   {
     name: DataTypes.STRING,
+    location: DataTypes.ENUM([
+      'ASIA',
+      'AFRICA',
+      'NORTH_AMERICA',
+      'SOUTH_AMERICA',
+      'ANTARCTICA',
+      'EUROPE',
+      'AUSTRALIA'
+    ]),
   },
   {
-    sequelize: db.connections.sp1,
+    sequelize: db.connections.db_user,
     modelName: 'user',
   }
 );

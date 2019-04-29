@@ -1,7 +1,7 @@
 const { Sequelize, } = require('sequelize');
 let connections = {};
 
-connections.sp1 = new Sequelize('sequelize_playground', 'postgres', '1234', {
+connections.db_user = new Sequelize('micro-db-user', 'postgres', '1234', {
   host: 'localhost',
   dialect: 'postgres',
   logging: false,
@@ -10,7 +10,16 @@ connections.sp1 = new Sequelize('sequelize_playground', 'postgres', '1234', {
   },
 });
 
-connections.sp2 = new Sequelize('sequelize_playground_2', 'postgres', '1234', {
+connections.db_post = new Sequelize('micro-db-post', 'postgres', '1234', {
+  host: 'localhost',
+  dialect: 'postgres',
+  logging: false,
+  define: {
+    timestamps: false,
+  },
+});
+
+connections.db_comment = new Sequelize('micro-db-comment', 'postgres', '1234', {
   host: 'localhost',
   dialect: 'postgres',
   logging: false,
