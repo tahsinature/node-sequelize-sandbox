@@ -1,19 +1,15 @@
 const faker = require('faker');
+const { debugDB, } = require('../util/debug');
 const models = require('../models');
 const { User, } = models;
-const data = [];
 
-for (let i = 0; i < 10; i++) {
-  const schema = {
-    name: faker.name.findName(),
-  };
-  data.push(schema);
-}
-
-User.bulkCreate(data)
-  .then(() => {
-    console.log(`${data.length} Users created`);
-  })
-  .catch(err => {
-    console.log(err.message);
+module.exports = () =>
+  new Promise(async (res, rej) => {
+    for (const iterator of Array(10)) {
+      await User.create({
+        name: faker.name.findName(),
+      });
+    }
+    debugDB('10 users created');
+    res();
   });
