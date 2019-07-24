@@ -5,7 +5,7 @@ class Comment extends Model {}
 
 Comment.init(
   {
-    name: DataTypes.STRING,
+    body: DataTypes.TEXT,
   },
   {
     sequelize: sp1,

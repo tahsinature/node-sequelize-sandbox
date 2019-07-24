@@ -9,6 +9,7 @@ module.exports.sp1 = new Sequelize({
   logging: false,
   define: {
     timestamps: false,
+    underscored: true,
   },
 });
 
@@ -21,5 +22,6 @@ module.exports.sp2 = new Sequelize({
   logging: false,
   define: {
     timestamps: false,
+    underscored: true,
   },
 });
