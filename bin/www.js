@@ -5,9 +5,9 @@
  */
 
 const app = require('../app');
-const debug = require('debug')('sequelize-playground:server');
+const { debugApp, } = require('../util/debug');
 const http = require('http');
-const db = require('../util/database');
+const { dbHelper, } = require('../models');
 
 /**
  * Get port from environment and store in Express.
@@ -25,16 +25,10 @@ const server = http.createServer(app);
 /**
  * Listen on provided port, on all network interfaces.
  */
-db.establishConnections()
-  .then(() => {
-    server.listen(port);
-    // const Sequelize = require('sequelize');
-    // console.log(Sequelize.db);
-  })
-  .catch(err => {
-    console.log(err.message);
-    console.log('Failed to connect to DB');
-  });
+dbHelper.establishConnections().then(() => {
+  server.listen(port);
+});
+
 server.on('error', onError);
 server.on('listening', onListening);
 
@@ -89,8 +83,7 @@ function onError(error) {
  */
 
 function onListening() {
-  console.log(`Listening to port ${port}...`);
   const addr = server.address();
   const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+  debugApp('Listening on ' + bind);
 }

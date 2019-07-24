@@ -1,8 +1,8 @@
-require('./models');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const { debugError, } = require('./util/debug');
 const normalizedPath = require('path').join(__dirname, 'routes');
 
 const app = express();
@@ -18,5 +18,9 @@ require('fs')
   .forEach(function(file) {
     app.use('/' + file.split('.js')[0], require('./routes/' + file));
   });
+
+process.on('unhandledRejection', err => {
+  debugError(err.message);
+});
 
 module.exports = app;
