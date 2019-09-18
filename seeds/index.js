@@ -8,4 +8,5 @@ dbHelper.syncAllForce().then(async () => {
   const users = await seedUser();
   const posts = await seedPost(users);
   await seedComment(posts);
+  dbHelper.closeAllConnections();
 });

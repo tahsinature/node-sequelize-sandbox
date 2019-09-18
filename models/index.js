@@ -10,7 +10,7 @@ const Comment = require('./comment');
 User.hasMany(Post);
 Post.hasMany(Comment);
 
-// db.syncAll();
+// dbHelper.syncAllForce();
 
 module.exports = {
   User,
